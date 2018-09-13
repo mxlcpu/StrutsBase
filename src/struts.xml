@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.devMode" value="true"></constant>
+	<constant name="struts.multipart.maxSize" value="5242880"></constant>
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"></constant>
+	<package name="upload" namespace="/upld" extends="struts-default" >
+		<action name="logup" class="com.mxlcpu.web.action.PhotoAction" method="logup">
+			<result>/logup.jsp</result>
+		</action>
+		<action name="photoup" class="com.mxlcpu.web.action.PhotoAction" method="upload">
+			<interceptor-ref name="defaultStack">
+				<param name="fileUpload.allowedTypes">image/jpeg,image/png</param>
+				<param name="fileUpload.allowedExtensions">.jpg,.gif</param>
+			</interceptor-ref>
+			<result>/success.jsp</result>
+			<result name="input">/logup.jsp</result>
+		</action>
+		<action name="download" class="com.mxlcpu.web.action.PhotoAction" method="download">
+			<result type="stream">
+				<!-- 通过名字找到在动作类中提供的流,该流不能用in命名!可能因为struts内部已使用该变量名称 -->
+				<param name="inputName">ips</param>
+				<!-- 告知MIMEType正文类型,浏览器收到流后会按照MIMEType处理流为文件 -->
+				<param name="contentType">application/octet-stream</param>//表示二进制文件
+				<!-- 告知浏览器下载文件 -->
+				<param name="contentDisposition">attachment;filename=${@java.net.URLEncoder@encode(fileName,"UTF-8")}</param>
+			</result>
+		</action>
+	</package>
+</struts>
